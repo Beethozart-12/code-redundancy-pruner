@@ -1,0 +1,41 @@
+name: selftest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Environment doctor + end-to-end selftest
+        run: python skill/scripts/rcp.py doctor --full
+
+      - name: Distribution zip matches skill/ byte-for-byte
+        run: |
+          python - <<'PY'
+          import hashlib, pathlib, zipfile
+          z = zipfile.ZipFile("dist/code-redundancy-pruner.zip")
+          root = pathlib.Path("skill")
+          bad = []
+          for name in z.namelist():
+              rel = name.split("/", 1)[1] if "/" in name else name
+              p = root / rel
+              if not p.is_file():
+                  bad.append("missing: " + rel)
+              elif hashlib.sha256(p.read_bytes()).digest() != hashlib.sha256(z.read(name)).digest():
+                  bad.append("differs: " + rel)
+          print("zip files:", len(z.namelist()), "mismatches:", bad)
+          raise SystemExit(1 if bad else 0)
+          PY

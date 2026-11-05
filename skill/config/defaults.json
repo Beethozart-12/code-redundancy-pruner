@@ -1,0 +1,57 @@
+{
+  "config_version": "1.0",
+  "_about": "code-redundancy-pruner 内置默认配置（唯一默认值来源）。项目级覆盖：在项目根放 rcp.config.json，只写需要改的字段，其余自动继承本文件。命令行参数优先级最高。",
+  "python_min_version": [3, 9],
+  "scan": {
+    "include_globs": ["*.py"],
+    "exclude_globs": [],
+    "exclude_dirs": [
+      ".git", ".hg", ".svn", "__pycache__", "node_modules", ".venv", "venv", "env",
+      "dist", "build", ".workbuddy", ".idea", ".vscode", "site-packages", ".tox",
+      ".mypy_cache", ".pytest_cache", ".ruff_cache", "target", "vendor", "coverage",
+      ".redundancy-pruner", ".learnings"
+    ],
+    "source_extensions": [
+      ".py", ".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".java", ".kt", ".go",
+      ".rs", ".c", ".h", ".cc", ".cpp", ".hpp", ".cs", ".rb", ".php", ".swift",
+      ".sql", ".sh", ".bash", ".ps1", ".vue", ".svelte", ".css", ".scss", ".html"
+    ],
+    "suppress_markers": ["rcp:keep", "noqa", "pragma: keep"],
+    "max_bytes": 1000000,
+    "max_files": 500
+  },
+  "rule_overrides": {},
+  "language_syntax_commands": {
+    "javascript": "node --check {file}",
+    "typescript": "npx tsc --noEmit --allowJs --skipLibCheck {file}",
+    "go": "gofmt -e {file}",
+    "rust": "rustc --emit=metadata --crate-type lib {file} -o /dev/null",
+    "java": "javac -d /tmp/rcp-java {file}",
+    "ruby": "ruby -c {file}",
+    "php": "php -l {file}",
+    "shell": "bash -n {file}",
+    "powershell": null,
+    "css": null,
+    "html": null
+  },
+  "extension_language": {
+    ".js": "javascript", ".mjs": "javascript", ".cjs": "javascript", ".jsx": "javascript",
+    ".ts": "typescript", ".tsx": "typescript",
+    ".go": "go", ".rs": "rust", ".java": "java", ".rb": "ruby", ".php": "php",
+    ".sh": "shell", ".bash": "shell", ".ps1": "powershell",
+    ".css": "css", ".scss": "css", ".html": "html"
+  },
+  "prune": {
+    "default_test_command": null,
+    "test_timeout": 600,
+    "backup_dirname": ".redundancy-pruner/backups",
+    "syntax_command": null,
+    "no_compare_output": false
+  },
+  "output": {
+    "config_filename": "rcp.config.json",
+    "report_json": "redundancy-report.json",
+    "report_md": "redundancy-report.md",
+    "prune_result": "prune-result.json"
+  }
+}

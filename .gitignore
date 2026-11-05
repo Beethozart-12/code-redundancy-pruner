@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.DS_Store
+*.log
+
+# Local runtime artifacts produced by the skill (never commit project data)
+.redundancy-pruner/
+redundancy-report.json
+redundancy-report.md
+prune-result.json
+rcp.config.json
+
+# Editor / OS
+.idea/
+.vscode/
+Thumbs.db
