@@ -71,7 +71,8 @@ python <RCP>/scripts/rcp.py rollback <backup_manifest.json>   # 反悔时还原
 
 | 检查 | 结果 |
 |---|---|
-| `python skill/scripts/selftest.py` | **59 / 59 PASS** |
+| `python skill/scripts/selftest.py` | **60 / 60 PASS** |
+| 同一自检在 Python 3.9 与 3.13 下 | 各 60 / 60 PASS |
 | `rcp.py doctor` | HEALTHY 9/9 |
 | 扫描技能自身源码（6 文件） | 0 finding |
 | 多文件报告 | 17 findings / 17 个唯一 ID，`prune` RC=0 |

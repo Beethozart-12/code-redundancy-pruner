@@ -310,7 +310,10 @@ def prune(args):
                 tmp = Path(args.tmp_dir or str(root)) / (
                     ".rcp_check_" + re.sub(r"\W", "_", rel)[-60:] + Path(rel).suffix)
                 tmp.parent.mkdir(parents=True, exist_ok=True)
-                tmp.write_text(new, encoding="utf-8", newline="")
+                # Path.write_text(newline=...) is Python 3.10+; use open() so
+                # the skill keeps its 3.9+ promise and CRLF stays byte-exact.
+                with open(tmp, "w", encoding="utf-8", newline="") as fh:
+                    fh.write(new)
                 cmd = cmd_tpl.replace("{file}", str(tmp))
                 rc, _, err = run_cmd(cmd, root, args.test_timeout)
                 try:

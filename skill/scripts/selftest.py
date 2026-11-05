@@ -422,6 +422,24 @@ def phase4(results):
     check("docs carry no stale 'must provide --syntax-cmd' / fixed selftest count",
           "必须提供 `--syntax-cmd`" not in docs and "31 项检查" not in docs, "", results)
 
+    # Guard the advertised Python 3.9+ floor. Path.write_text(newline=...) was
+    # added in 3.10 and once broke the whole L1 path on 3.9 (ERR-20261105-003).
+    compat_bad = []
+    for p in sorted(SCRIPTS.glob("*.py")):
+        src = p.read_text(encoding="utf-8")
+        try:
+            tree = ast.parse(src, filename=str(p), feature_version=(3, 9))
+        except SyntaxError as exc:
+            compat_bad.append(f"{p.name}: 3.9 syntax: {exc.msg}")
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
+                    and node.func.attr in ("write_text", "read_text") \
+                    and any(k.arg == "newline" for k in node.keywords):
+                compat_bad.append(f"{p.name}:{node.lineno}: newline= is Python 3.10+")
+    check("Python 3.9 syntax/API compatibility (static)",
+          not compat_bad, "; ".join(compat_bad)[:200], results)
+
     shutil.rmtree(tmp, ignore_errors=True)
 
 
