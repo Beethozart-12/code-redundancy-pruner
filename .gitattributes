@@ -1,0 +1,6 @@
+# Keep every text file byte-identical across Windows / Linux / macOS checkouts.
+# rcp.sh is a Unix launcher, so a CRLF checkout would break it.
+* text=auto eol=lf
+
+# The distributable zip is binary and must never be line-ending converted.
+*.zip binary
